@@ -1,2 +1,3 @@
-It's a unfinished project about a odyssey-like RPG.
-More in the future...
+It's an unfinished RPG game.
+Now we have battles and an inventory system.
+
