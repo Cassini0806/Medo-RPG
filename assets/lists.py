@@ -1,27 +1,35 @@
 items = [
     [
-        ["sword", 15, 0],
-        ["axe", 20, 0],
-        ["spear", 10, 0],
-        ["dagger", 5, 0],
-        ["gun", 100, 0],   
+        ["Axe", 25, 0, 1],
+        ["Dagger", 5, 0, 1],
+        ["Gun", 50, 0, 1],   
+        ["Sickle", 10, 0, 1],
+        ["Sword", 15, 0, 1],
     ],
     [
-        ["lemon", 1, 1],
-        ["apple", 5, 1],
-        ["bread", 10, 1],
-        ["meat", 25, 1],
-        ["cake", 50, 1],
+        ["Apple", 10, 1],
+        ["Bread", 20, 1],
+        ["Cake", 50, 1],
+        ["Lemon", 5, 1],
+        ["Meat", 30, 1],
+        ["Wine", 40, 1],
     ],
+    [
+        ["Broken teapot", 5, 2],
+        ["Old book", 25, 2],
+        ["Old coin", 2, 2],
+        ["Wrecked clock", 10, 2],
+        ["Rusty scalpel", 3, 2],
+        ["Mafagafo", 50, 2],
+    ],
+    [
+        ["Oil Lamp", 25, 3],
+        ["Crucifix", 30, 3],
+        ["Hat", 15, 3],
+        ["Coat", 25, 3],
+        ["Fairy in a pot", 50, 3]
+    ]
 ]
-
-Artifacts = {
-    "ring": 50,
-    "crucifix": 25,
-    "cricket": 10,
-    "rubik's cube": 15,
-}
-
 
 Miscellaneous = {
     "quartz": 5,
@@ -30,35 +38,23 @@ Miscellaneous = {
 }
 
 Mob_types = (
-    "Ghost",
-    "Goblin",
-    "Skeleton",
-    "Gargoyle",
-    "Devil Tree",
-    "Witch",
+    "Banshee ",
+    "Gargoyle ",
+    "Ghost ",
+    "Skeleton ",
+    "Spider ",
+    "Vampire ",
 )
 
 Boss = (
-    "Dragon",
-    "Necromancer",
+    "Lady in the mirror",
+    "Desmodus, the Lord of Bats",
+    "Camilla, Marchioness of Crowhill", #Em portugues, traduzir para Montecorvo
+    "Bogeyman",#Bicho Papão
 )
 
-Npc_types = (
-    "Blacksmith",
-    "Butcher",
-    "Farmer",
-    "Librarian",
-    "Priest",
-    "Warrior",
-)
-
-def logo():
-    print(f"""   ▄▄▄▄███▄▄▄▄      ▄████████ ████████▄   ▄██████▄  
-    ▄██▀▀▀███▀▀▀██▄   ███    ███ ███   ▀███ ███    ███ 
-    ███   ███   ███   ███    █▀  ███    ███ ███    ███ 
-    ███   ███   ███  ▄███▄▄▄     ███    ███ ███    ███ 
-    ███   ███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ 
-    ███   ███   ███   ███    █▄  ███    ███ ███    ███ 
-    ███   ███   ███   ███    ███ ███   ▄███ ███    ███ 
-    ▀█   ███   █▀    ██████████ ████████▀   ▀██████▀  
-                                                        """)
+Npc_types = [
+    "James, the Butler",
+    "The Crow",
+    #"Lady in the Mirror" come here when defeated
+]

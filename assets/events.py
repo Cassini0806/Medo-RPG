@@ -5,16 +5,17 @@ from assets.lists import *
 class player:
 
     player = {
-        "name": "Player",
-        "gender": "",
-        "level": 1,
+        "gender": "m",
         "hp": 100,
-        "hpMax": 100,
-        "xp": 0,
-        "xpMax": 50,
-        "hand": [""],
         "atk": 2,
-        "aureus": 0,
+        "xp": 0,
+        "hpMax": 100,
+        "coins": 0,
+        "name": "Player",
+        "level": 1,
+        "amulet": [""],
+        "hand": [""],
+        "xpMax": 100,
     }
 
     def name(self):
@@ -23,13 +24,15 @@ class player:
         self.player["gender"] = input("Gender [m/f]: ")
 
     def show_player(self):    
+        keys = list(self.player.keys())
+        index = 0
         print(f"\033[31m{self.player["name"]}")
-        print(f"\033[34m  Level: {self.player["level"]}")
-        print(f"\033[32m  Hp: {self.player["hp"]}")
-        print(f"  Xp: {self.player["xp"]}")
-        print(f"  hand: {self.player["hand"][0]}")
-        print(f"  atk: {self.player["atk"]}")
-        print(f"  Aureus: {self.player["aureus"]}\033[0m")
+        print(f"\033[34m  Level: {self.player["level"]}\033[0m")
+        print(f"\033[34m  Hand: {self.player["hand"][0]}\033[0m")
+        print(f"\033[34m  Artifact: {self.player["amulet"][0]}\033[0m")
+        while index <= len(self.player) - 7:
+            print(f"\033[32m  {keys[index]}: {self.player[keys[index]]}\033[0m")
+            index += 1        
 
     def off_hand(self):
         if self.player["hand"] != [""]:
@@ -39,49 +42,75 @@ class player:
         else: 
             print("No item is in your hand")
 
+    def amulet(self):
+        if self.player["amulet"] != [""]:
+            inventory().inventory.append(self.player["amulet"])
+            self.player["amulet"] = [""]
+            self.player["hp"] = 100 * self.player["level"]
+        else: 
+            print("No Artifact in use")
+
 class inventory:
     def __init__(self):
         pass    
 
-    inventory = [["sword", 15, 0],
-                 ["axe", 20, 0],
-                 ["apple", 5, 1],
-                 ["sword", 15, 0],]
+    inventory = [["Sword", 15, 0, 1],
+                 ["Axe", 20, 0, 1],
+                 ["Apple", 5, 1],
+                 ["Sword", 15, 0, 1],
+                 ["Gun", 50, 0, 1],
+                 ["Oil Lamp", 15, 3],
+                 ]
 
     def show_inventory(self):
         print(f"\033[31mInventory\033[0m")
         if len(self.inventory) > 0:
+            index = 0
             for i in self.inventory:
-                print(f"\033[34m * {i[0]}\033[0m")
+                index += 1
+                print(f"\033[34m {index} - {i[0]}\033[0m")
         else:
             print("The inventory is empty")
 
-    #search the item by name and return the index
-    def search(self, l):
-        for j in range(len(self.inventory)-1):
-            if l in self.inventory[j]:
-                return j
-
-    def del_item(self, i):
-        j = self.search(i)
-        if i in self.inventory[j]:
-            self.inventory.pop(j)
+    def del_item(self):
+        j = input("inv_drop> ")
+        if j.isdigit():
+            i = int(j) - 1
+            if i < len(self.inventory):
+                j = int(i)
+                self.inventory.pop(j)
+            else:
+                pass
+        else: 
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Item not founded")
 
     def add_item(self, h, i):
         self.inventory.append(items[h][i])
 
-    def use_item(self, j):
-        i = self.search(j)
-        if self.inventory[i][2] == 0 and player().player["hand"] == [""]:
-            player().player["atk"] = self.inventory[i][1] * 2
-            player().player["hand"] = self.inventory[i]
-            self.inventory.pop(i)
+    def use_item(self):
+        j = input("inv_use> ")
+        if j.isdigit():
+            i = int(j) - 1
+            if i < len(self.inventory):
+                if self.inventory[i][2] == 0 and player().player["hand"] == [""]:
+                    player().player["atk"] = self.inventory[i][1] * 2
+                    player().player["hand"] = self.inventory[i]
+                    self.inventory.pop(i)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                elif self.inventory[i][2] == 1 and player.player["hp"] < player().player["hpMax"]:
+                    player().player["hp"] += self.inventory[i][1]
+                    self.inventory.pop(i)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                elif self.inventory[i][2] == 3 and player().player["amulet"] == [""]:
+                    player().player["hpMax"] += self.inventory[i][1] * 3
+                    player().player["amulet"] = self.inventory[i]
+                    self.inventory.pop(i)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                else:
+                    pass    
+        else:
             os.system('cls' if os.name == 'nt' else 'clear')
-        elif self.inventory[i][2] == 1 and player.player["hp"] < player().player["hpMax"]:
-            player().player["hp"] += self.inventory[i][1]
-            self.inventory.pop(i)
-            os.system('cls' if os.name == 'nt' else 'clear')
-        else: 
             print("Item not found")
 
 class Mobspawner:
@@ -110,61 +139,139 @@ class Mobspawner:
         for i in range(len(self.monster)):
             print(f"{self.monster[i]}")
 
+    def spawn_boss(self, id_boss):
+        level = self.Playerlevel * 20
+        new_boss = {
+            "name": Boss[id_boss],
+            "level": "",
+            "hp": 25 * level,
+            "atk": 2 * level,
+            "xp": 2 * level
+        }
+        self.monster.append(new_boss)
+
 class battle:
-    def __init__(self, id_mob):
+    def __init__(self, id_mob, Boss):
         self.id_mob = int(id_mob)
-        self.PlayerLevel = player().player["level"]
-        self.PlayerHP = player().player["hp"]
-        self.PlayerAtk = player().player["atk"]
-        self.PlayerXp = player().player["xp"]
+        self.IsBoss = Boss
         self.MobName = Mobspawner().monster[self.id_mob]["name"]
         self.MobLevel = Mobspawner().monster[self.id_mob]["level"]
-        self.MobHP = Mobspawner().monster[self.id_mob]["hp"]
-        self.MobAtk = Mobspawner().monster[self.id_mob]["atk"]
-        self.MobXp = Mobspawner().monster[self.id_mob]["xp"]
-    
+        self.width = 100
+
+    def drop_item(self):
+        c = random.randint(1, 3)
+        if c == 1:
+            drop = items[random.randint(0,3)][random.randint(0,4)]
+            inventory().inventory.append(drop)
+            print(f"New item obteined: {drop[0]}")
+        else:
+            pass
+
+    def level_up(self):
+        if player().player["xp"] >= player().player["xpMax"]:
+            player().player["xp"] -= player().player["xpMax"]
+            player().player["level"] += 1
+            player().player["hpMax"] += 100
+
     def attack_player(self):
-        self.PlayerHP -= self.MobAtk
-    
+        player().player["hp"] -= Mobspawner.monster[self.id_mob]["atk"] 
+
     def attack_mob(self):
-        self.MobHP -= self.PlayerAtk
+        Mobspawner.monster[self.id_mob]["hp"] -= player().player["atk"]  
         self.attack_player()
 
     def show_battle(self):
-        print(f"\033[34mPlayer // Hp: {self.PlayerHP}\033[31m")
-        print(f"{self.MobName} level {self.MobLevel} // Hp:{self.MobHP}\033[0m")
+        print(f"\033[34mPlayer // Hp: {player().player["hp"]}\033[31m".center(self.width))
+        print(f"{self.MobName}{self.MobLevel} // Hp:{Mobspawner().monster[self.id_mob]["hp"]}\033[0m".center(self.width))
 
     def loop(self):
-        while self.MobHP > 0 and self.PlayerHP > 0:
+        while Mobspawner().monster[self.id_mob]["hp"] > 0 and player().player["hp"] > 0:
             os.system('cls' if os.name == 'nt' else 'clear')
             self.show_battle()
             command = input("Next Movement: ")
             if command == "atk":
                 os.system('cls' if os.name == 'nt' else 'clear')
                 self.attack_mob()
-                if self.PlayerHP <= 0:
-                    print(f"\033[31mYou died\033[0m")
-                elif self.MobHP <= 0:
-                    self.PlayerXp += self.MobXp
-                    print(f"\033[32m{self.MobName} as been slayed")
-                    print(f"Hp: {self.PlayerHP} // Xp: {self.PlayerXp}\033[0m")
-            elif command == "run":
+                if player().player["hp"] <= 0:
+                    print(f"\033[31mYou died\033[0m".center(50))
+                    break
+                elif Mobspawner().monster[self.id_mob]["hp"] <= 0:
+                    player().player["xp"] += Mobspawner().monster[self.id_mob]["xp"]
+                    print(f"\033[32m{self.MobName} as been slayed".center(self.width))
+                    print(f"Hp: {player().player["hp"]} // Xp: {player().player["xp"]}\033[0m".center(self.width))
+                    Mobspawner().monster.pop(self.id_mob)
+                    self.drop_item()
+                    self.level_up()
+                    break
+            elif command == "run" and self.IsBoss == False:
                 os.system('cls' if os.name == 'nt' else 'clear')
-                self.PlayerXp -= self.MobXp
-                print(f"\033[31mYou ran away from {self.MobName}")
-                print(f"Hp: {self.PlayerHP} // Xp: {self.PlayerXp}\033[0m")
+                player().player["xp"] += Mobspawner().monster[self.id_mob]["xp"]
+                Mobspawner().monster.pop(self.id_mob)
+                print(f"\033[31mYou ran away from {self.MobName}".center(self.width))
+                print(f"Hp: {player().player["hp"]} // Xp: {player().player["xp"]}\033[0m".center(self.width))
                 break
             elif command == "inv":
                 inventory().show_inventory()
                 print(f"\033[32mCommands: offhand, use\033[0m")
                 inv = input("inv> ")
                 if inv == "use":
-                    i = int(input("inv_use> "))
-                    inventory().use_item(i)
+                    inventory().use_item()
                 elif inv == "offhand":
                     player().off_hand()
                 else:
                     pass
             else:
                 pass
-            
+
+class npcs:
+    def __init__(self):
+        pass    
+    
+    def upgrade_tool(self):
+        id_item = input("Upgrade_Item> ")
+        if id_item.isdigit():
+            id = int(id_item) - 1
+            level = inventory().inventory[id][3] + 1
+            inventory().inventory[id][3] += 1
+            inventory().inventory[id][1] * 2
+            inventory().inventory[id][0] = inventory().inventory[id][0] + f" l{level}"
+            player().player["coins"] -= level ** 2
+        else: 
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Item not founded")
+
+    def sell_item(self):
+        i = input("inv_sell> ")
+        if i.isdigit():
+            i = int(i) - 1
+            if i < len(inventory().inventory):
+                j = int(i)
+                player().player["coins"] += inventory().inventory[j][1] * 2
+                inventory().inventory.pop(j)
+            else:
+                pass
+        else: 
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Item not founded")
+    
+class Tower:
+    def __init__(self):
+        pass
+    
+    width = 50
+    
+    def Start(self):
+        text = "The Tower"
+        print(text.center(self.width))
+        print(f"You were trapped in a tower for five days and fives nights by your girlfriend.")
+        print(f"You chose freedom and now your life is in danger.")
+        print("")
+        print(f"""          ▄▄▄▄███▄▄▄▄      ▄████████ ████████▄   ▄██████▄  
+        ▄██▀▀▀███▀▀▀██▄   ███    ███ ███   ▀███ ███    ███ 
+        ███   ███   ███   ███    █▀  ███    ███ ███    ███ 
+        ███   ███   ███  ▄███▄▄▄     ███    ███ ███    ███ 
+        ███   ███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ 
+        ███   ███   ███   ███    █▄  ███    ███ ███    ███ 
+        ███   ███   ███   ███    ███ ███   ▄███ ███    ███ 
+         ▀█   ███   █▀    ██████████ ████████▀   ▀██████▀  
+                                                        """.center(self.width))
