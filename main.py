@@ -43,9 +43,9 @@ class Gameloop():
 
     def randevent(self):
         dice = random.randint(1, 10)        
-        if dice >= 0 and dice < 5:
+        if dice > 0 and dice <= 5:
             control().start_fight()
-        elif dice >= 5 and dice < 8:
+        elif dice > 5 and dice <= 8 :
             loot().loot_open()
         else:
             npcs().spawn_npc()
