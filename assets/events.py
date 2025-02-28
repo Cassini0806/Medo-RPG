@@ -317,6 +317,7 @@ class npcs:
             
     def buy_item(self):
         inventory().show_inventory()
+        print('-' * 50)
         index = 0
         for i in self.itemsB:
             print(f"{index + 1} - {i[0]} ${i[1] / 5}") 
