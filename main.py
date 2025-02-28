@@ -107,6 +107,8 @@ class control:
                 else:
                     print("Mob doesn't exist")
                     pass
+        input("> ")
+
 
     def edit_inventory(self):
         plin = inventory()
