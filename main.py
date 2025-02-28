@@ -51,7 +51,7 @@ class Gameloop():
             npcs().spawn_npc()
 
     def loop(self):
-        while self.run == True and player().player["hp"] >= 0:
+        while self.run == True and player().player["hp"] > 0:
             os.system('cls' if os.name == 'nt' else 'clear')
             if player().player["hp"] >= 0:
                 key = input("$> ")
