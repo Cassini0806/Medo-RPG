@@ -402,6 +402,8 @@ class loot:
             drop = items[random.randint(0,2)][random.randint(0,5)]
             print(f"You have found {drop[0]}")
             inventory().inventory.append(drop)
+            input("> ")
+
 
     def loot_open(self):
         print(f"You found a {random.choice(box)}.")
@@ -444,8 +446,12 @@ class help:
             self.help_items()
         elif help == "stats":
             print(f"{Npc_types[0]}: Are your stats like level, attack and health points. I thought you knew that.")
+         elif help == "credits":
+            print(f"This game was designed and programmed by Thiago Cardoso. Please access my portfolio on github at \033[34m'https://github.com/Cassini0806'\033[0m")
         else:
             print(f"{Npc_types[0]}: I don't know what this is. Please enter another command.")
+            self.help()
+        input("> ")
 
     def help_items(self):
         print(f"{Npc_types[0]}: There are several different items for different functions.")
