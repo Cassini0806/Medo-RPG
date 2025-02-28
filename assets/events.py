@@ -6,22 +6,28 @@ class player:
 
     player = {
         "gender": "m",
-        "hp": 100,
+        "hp": 90,
         "atk": 2,
         "xp": 0,
-        "hpMax": 100,
-        "coins": 0,
+        "coins": 100,
         "name": "Player",
         "level": 1,
         "amulet": [""],
         "hand": [""],
         "xpMax": 100,
+        "hpMax": 100,
+        "MobsKilled": 0
     }
 
     def name(self):
-        print("Select your attributes, please.")
+        print("Select your name and gender, please.")
         self.player["name"] = input("Name: ")
-        self.player["gender"] = input("Gender [m/f]: ")
+        gender = input("Gender [m/f]: ")
+        if gender == "m" or gender == "f":
+            self.player["gender"] = gender
+        else:
+            print("Huh...ok?")
+            self.player["gender"] = gender
 
     def show_player(self):    
         keys = list(self.player.keys())
@@ -30,7 +36,7 @@ class player:
         print(f"\033[34m  Level: {self.player["level"]}\033[0m")
         print(f"\033[34m  Hand: {self.player["hand"][0]}\033[0m")
         print(f"\033[34m  Artifact: {self.player["amulet"][0]}\033[0m")
-        while index <= len(self.player) - 7:
+        while index <= len(self.player) - 8:
             print(f"\033[32m  {keys[index]}: {self.player[keys[index]]}\033[0m")
             index += 1        
 
@@ -54,13 +60,7 @@ class inventory:
     def __init__(self):
         pass    
 
-    inventory = [["Sword", 15, 0, 1],
-                 ["Axe", 20, 0, 1],
-                 ["Apple", 5, 1],
-                 ["Sword", 15, 0, 1],
-                 ["Gun", 50, 0, 1],
-                 ["Oil Lamp", 15, 3],
-                 ]
+    inventory = [["Bread", 15, 1],]
 
     def show_inventory(self):
         print(f"\033[31mInventory\033[0m")
@@ -83,23 +83,21 @@ class inventory:
                 pass
         else: 
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("Item not founded")
-
-    def add_item(self, h, i):
-        self.inventory.append(items[h][i])
+            print("Item not found")
 
     def use_item(self):
         j = input("inv_use> ")
         if j.isdigit():
             i = int(j) - 1
-            if i < len(self.inventory):
+            if i < len(self.inventory) and i >= 0:
                 if self.inventory[i][2] == 0 and player().player["hand"] == [""]:
                     player().player["atk"] = self.inventory[i][1] * 2
                     player().player["hand"] = self.inventory[i]
                     self.inventory.pop(i)
                     os.system('cls' if os.name == 'nt' else 'clear')
                 elif self.inventory[i][2] == 1 and player.player["hp"] < player().player["hpMax"]:
-                    player().player["hp"] += self.inventory[i][1]
+                    health = player().player["hp"] * self.inventory[i][1] / 10
+                    player().player["hp"] += health
                     self.inventory.pop(i)
                     os.system('cls' if os.name == 'nt' else 'clear')
                 elif self.inventory[i][2] == 3 and player().player["amulet"] == [""]:
@@ -120,7 +118,7 @@ class Mobspawner:
     monster = []
 
     def create_mob(self):
-        level = self.Playerlevel * random.randint(1, 10)
+        level = self.Playerlevel * random.randint(1, 5)
         new_mob = {
             "name": random.choice(Mob_types),
             "level": level,
@@ -137,10 +135,10 @@ class Mobspawner:
 
     def show_mobs(self):
         for i in range(len(self.monster)):
-            print(f"{self.monster[i]}")
+            print(f"{i + 1} - {self.monster[i]["name"]} lvl {self.monster[i]["level"]}")
 
     def spawn_boss(self, id_boss):
-        level = self.Playerlevel * 20
+        level = self.Playerlevel * 15
         new_boss = {
             "name": Boss[id_boss],
             "level": "",
@@ -160,8 +158,8 @@ class battle:
 
     def drop_item(self):
         c = random.randint(1, 3)
-        if c == 1:
-            drop = items[random.randint(0,3)][random.randint(0,4)]
+        if c >= 1 and c <= 2:
+            drop = items[random.randint(0,2)][random.randint(0,5)]
             inventory().inventory.append(drop)
             print(f"New item obteined: {drop[0]}")
         else:
@@ -187,6 +185,8 @@ class battle:
     def loop(self):
         while Mobspawner().monster[self.id_mob]["hp"] > 0 and player().player["hp"] > 0:
             os.system('cls' if os.name == 'nt' else 'clear')
+            if self.IsBoss == True:
+                print(f"You found {Mobspawner().monster[self.id_mob]["name"]}")
             self.show_battle()
             command = input("Next Movement: ")
             if command == "atk":
@@ -194,15 +194,21 @@ class battle:
                 self.attack_mob()
                 if player().player["hp"] <= 0:
                     print(f"\033[31mYou died\033[0m".center(50))
+                    Mobspawner().monster.clear()
                     break
                 elif Mobspawner().monster[self.id_mob]["hp"] <= 0:
                     player().player["xp"] += Mobspawner().monster[self.id_mob]["xp"]
+                    player().player["MobsKilled"] += 1
                     print(f"\033[32m{self.MobName} as been slayed".center(self.width))
-                    print(f"Hp: {player().player["hp"]} // Xp: {player().player["xp"]}\033[0m".center(self.width))
-                    Mobspawner().monster.pop(self.id_mob)
-                    self.drop_item()
-                    self.level_up()
-                    break
+                    if Mobspawner.monster[0]["name"] == Boss[4]:
+                        print("Congratulations!".center(self.width))
+                        player().player["hp"] -= player().player["hp"]
+                    else:
+                        print(f"Hp: {player().player["hp"]} // Xp: {player().player["xp"]}\033[0m".center(self.width))
+                        Mobspawner().monster.pop(self.id_mob)
+                        self.drop_item()
+                        self.level_up()
+                        break
             elif command == "run" and self.IsBoss == False:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 player().player["xp"] += Mobspawner().monster[self.id_mob]["xp"]
@@ -227,51 +233,256 @@ class npcs:
     def __init__(self):
         pass    
     
+    def spawn_npc(self):
+        dice = random.randint(1,2)
+        print(f"You met {Npc_types[dice]}")
+        if dice == 1:
+            self.butler()
+        else:
+            self.lady()
+
     def upgrade_tool(self):
+        inventory().show_inventory()
         id_item = input("Upgrade_Item> ")
         if id_item.isdigit():
             id = int(id_item) - 1
-            level = inventory().inventory[id][3] + 1
-            inventory().inventory[id][3] += 1
-            inventory().inventory[id][1] * 2
-            inventory().inventory[id][0] = inventory().inventory[id][0] + f" l{level}"
-            player().player["coins"] -= level ** 2
+            if inventory().inventory[id][2] == 0 or inventory().inventory[id][2] == 3:
+                level = inventory().inventory[id][3] + 1
+                inventory().inventory[id][3] += 1
+                inventory().inventory[id][1] * 2
+                inventory().inventory[id][0] = inventory().inventory[id][0] + f" lvl {level}"
+                player().player["xp"] -= level ** 2
+                print(f"{Npc_types[2]}: Now it's better, i think...")
+            else:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f"{Npc_types[2]}: I cannot upgrade this, sorry")
+                self.upgrade_tool()
+        elif id_item == "exit":
+            print(f"{Npc_types[2]}: Ok, see you...")
+            pass  
         else: 
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("Item not founded")
+            print("Item not found")
+
+    def trade(self):
+        inventory().show_inventory()
+        id_item = input("Trade> ")
+        if id_item.isdigit():
+            id = int(id_item) - 1
+            if inventory.inventory[id][2] == 2:
+                inventory.inventory.pop(id)
+                inventory.inventory.append(items[3][random.randint(0, 5)])
+                print("Maybe this would be useful")
+            else:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f"{Npc_types[2]}: Why would i need this? Do you have something more interesting?")
+                self.trade()
+        elif id_item == "exit":
+            print(f"{Npc_types[2]}: Ok, see you...")
+            pass
+        else: 
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Item not found")
+            self.trade()
 
     def sell_item(self):
-        i = input("inv_sell> ")
+        inventory().show_inventory()
+        i = input("sell> ")
         if i.isdigit():
             i = int(i) - 1
             if i < len(inventory().inventory):
                 j = int(i)
-                player().player["coins"] += inventory().inventory[j][1] * 2
+                player().player["coins"] += inventory().inventory[j][1] / 5
                 inventory().inventory.pop(j)
+                print(f"{Npc_types[0]}: It ain't much, but it's honest work")
             else:
                 pass
+        elif i == "exit":
+            pass  
         else: 
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("Item not founded")
+            print("Item not found")
+            self.sell_item()
+
+    itemsB = []
     
-class Tower:
+    def create_items(self):
+        self.itemsB.clear()
+        self.itemsB.append(items[0][random.randint(0,2)])
+        self.itemsB.append(items[0][random.randint(3,5)])
+        self.itemsB.append(items[1][random.randint(0,2)])
+        self.itemsB.append(items[1][random.randint(3,5)])
+            
+    def buy_item(self):
+        inventory().show_inventory()
+        index = 0
+        for i in self.itemsB:
+            print(f"{index + 1} - {i[0]} ${i[1] / 5}") 
+            index += 1
+        i = input("buy> ")
+        if i.isdigit(): 
+            i = int(i) - 1
+            ii = input("Quantity> ")
+            if ii.isdigit():
+                ii = int(ii)
+                if i < len(self.itemsB) and player().player["coins"] >= self.itemsB[i][1] * ii / 10:
+                    groceries = i
+                    player().player["coins"] -= self.itemsB[groceries][1] / 10
+                    for h in range(ii):
+                        inventory().inventory.append(self.itemsB[groceries])
+                    print(f"{Npc_types[1]}: Please, don't tell this to anyone")
+                else:
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f"{Npc_types[1]}: You cannot pay for it!")
+                    npcs().buy_item()
+            else:
+                pass
+        elif i == "exit":
+            pass  
+        else: 
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Item not found")
+            npcs().buy_item()
+
+    def butler(self):
+        print(f"{Npc_types[1]}: Hello sir, do you need help?(y/n)")
+        key = input("> ")
+        if key == "y":
+            print(f"{Npc_types[1]}: So how can i help you?(sell or buy)")
+            ans = input("> ")
+            if ans == "sell":
+                inventory().show_inventory()
+                npcs().sell_item()
+            elif ans == "buy":
+                npcs().create_items()
+                npcs().buy_item()
+        else:
+            print(f"{Npc_types[1]}: Well, see you later")
+
+    def lady(self):
+        print(f"{Npc_types[2]}: Huh, Hello? Do you need my help!?(y/n)")
+        key = input("> ")
+        if key == "y":
+            print(f"{Npc_types[2]}: How can I be helpful?(trade or upt)")
+            ans = input("> ")
+            if ans == "upt":
+                npcs().upgrade_tool()
+            elif ans == "trade":
+                npcs().trade()
+        else:
+            print(f"{Npc_types[2]}: Ok, see you...")
+            
+    def crow(self):
+        print(f"{Npc_types[0]}: Hello friend, I'm Jack and i'll help you in these journey.")
+        help().first_help()
+        
+class loot: 
+    def __init__(self):
+        self.Playerlevel = player().player['level']
+        pass
+
+    def spawn_mimic(self):
+        Mobspawner().monster.clear()
+        level = self.Playerlevel * random.randint(1, 10)
+        new_mob = {
+            "name": "Mimic ",
+            "level": level,
+            "hp": 10 * level,
+            "atk": 3 * level,
+            "xp": 3 * level
+        }
+        Mobspawner.monster.append(new_mob)
+
+    def open_chest(self):
+        dice = random.randint(0,2)
+        if dice == 2:
+            self.spawn_mimic()
+            battle(0, False).loop()
+        else:
+            drop = items[random.randint(0,2)][random.randint(0,5)]
+            print(f"You have found {drop[0]}")
+            inventory().inventory.append(drop)
+
+    def loot_open(self):
+        print(f"You found a {random.choice(box)}.")
+        print("Do you want to open it?[y/n]")
+        ans = input("> ")
+        if ans == "y":
+            self.open_chest()
+        else: 
+            pass
+
+class help:
     def __init__(self):
         pass
-    
-    width = 50
-    
-    def Start(self):
-        text = "The Tower"
-        print(text.center(self.width))
-        print(f"You were trapped in a tower for five days and fives nights by your girlfriend.")
-        print(f"You chose freedom and now your life is in danger.")
-        print("")
-        print(f"""          ▄▄▄▄███▄▄▄▄      ▄████████ ████████▄   ▄██████▄  
-        ▄██▀▀▀███▀▀▀██▄   ███    ███ ███   ▀███ ███    ███ 
-        ███   ███   ███   ███    █▀  ███    ███ ███    ███ 
-        ███   ███   ███  ▄███▄▄▄     ███    ███ ███    ███ 
-        ███   ███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ 
-        ███   ███   ███   ███    █▄  ███    ███ ███    ███ 
-        ███   ███   ███   ███    ███ ███   ▄███ ███    ███ 
-         ▀█   ███   █▀    ██████████ ████████▀   ▀██████▀  
-                                                        """.center(self.width))
+
+    def first_help(self):
+        print(f"{Npc_types[0]}: The first thing you to need know is: the castle is full of creatures ready to murder you.")
+        print(f"You can fight with them, but be careful. You will need weapons and resources to escape from here, like this dagger.")
+        inventory().inventory.append(items[0][1])
+        print(f"{Npc_types[0]}: Do you need know more?(y/n)")
+        help = input("> ")
+        if help == "y":
+            self.help()
+        else:
+            print(f"{Npc_types[0]}: Right, i'll be here if you need help!")
+            input("> ")
+            pass
+
+    def help(self):
+        print(f"{Npc_types[0]}: Type what do you need know. (commands, npcs, battles, inventory, items, stats)")
+        help = input("> ")
+        if help == "commands":
+            self.help_Command()
+        elif help == "npcs":
+            self.help_Npcs()
+        elif help == "battles":
+            self.help_battles()
+        elif help == "inventory":
+            self.help_inventory()
+        elif help == "items":
+            self.help_items()
+        elif help == "stats":
+            print(f"{Npc_types[0]}: Are your stats like level, attack and health points. I thought you knew that.")
+        else:
+            print(f"{Npc_types[0]}: I don't know what this is. Please enter another command.")
+
+    def help_items(self):
+        print(f"{Npc_types[0]}: There are several different items for different functions.")
+        print(f"    Weapons: can increase damage to mobs;")
+        print(f"    Food: can regenerate health points;")
+        print(f"    Broken items: can be traded to the Lady in the mirror for artifacts;")
+        print(f"    Artifacts: are amulets that increase health points.")
+
+    def help_inventory(self):
+        print(f"{Npc_types[0]}: The inventory is where you can acess and manage your items.")
+        print(f"In the inventory, you have some special commands:")
+        print(f"    drop: delete the item;")
+        print(f"    use: use the item for regeneration or increase atk/hp;")
+        print(f"    offhand: remove weapons of your hand;")
+        print(f"    offartc: remove artifacts from the other hand.")
+
+    def help_battles(self):
+        print(f"{Npc_types[0]}: It's fight or flight, you can battle with monsters or run of then.")
+        print(f"During a fight, you can attack using 'atk' or acess the inventory using 'inv'. You can flight of a fight using 'run' (except boss fights).")
+
+    def help_Npcs(self):
+        print(f"{Npc_types[0]}: Npcs are ready for help you, they can trade, sell, buy and even upgrading items.")
+        print(f"But remember, they will charge coins or xp for the services.")
+
+    def help_Command(self):
+        print(f"{Npc_types[0]}: Here are some commands to you:")
+        print("     inv: acess your inventory;")
+        print("     stats: acess your stats (hp, atk, etc);")
+        print("     exit: close the game, inventory or npc dialogue;")
+        print("     (You can only close the game after a complete turn marked by the '$>' symbol)")
+        print("     nxt: go to the next event.")
+
+class text:
+    def __init__(self):
+        pass
+
+    def text_generator(self):
+        text = random.choice(frases)
+        new_text = text.replace("{$$$}", random.choice(room))
+        return new_text
