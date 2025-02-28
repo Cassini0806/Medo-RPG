@@ -10,7 +10,7 @@ class Gameloop():
     width = 50
 
     def Start(self):
-        words = "You were trapped in a tower for five days and nights by your vampire girlfriend. You chose freedom and now your life is in danger."
+        words = "You were trapped in a castle for five days and nights by your vampire girlfriend. You chose freedom and now your life is in danger."
         for char in words:
             sleep(0.1)
             sys.stdout.write(char)
