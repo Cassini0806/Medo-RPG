@@ -1,2 +1,1 @@
-It's an unfinished RPG game.
-More in the future...
+**Medo RPG** is a text-based RPG, made with educational purposes (It even looks sophisticated haha). You can download the exe file <a name="https://github.com/Cassini0806/Medo-RPG/blob/main/Exe/Medo-RPG.zip"><ins>here</ins></a>. 
