@@ -6,7 +6,7 @@ class player:
 
     player = {
         "gender": "m",
-        "hp": 90,
+        "hp": 100,
         "atk": 2,
         "xp": 0,
         "coins": 100,
