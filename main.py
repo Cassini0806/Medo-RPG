@@ -144,6 +144,7 @@ class control:
             self.terminal(input("> "))
         elif key == "clear":
             os.system('cls' if os.name == 'nt' else 'clear')
+            self.terminal(input("> "))
         elif key == "nxt":
             pass
         else:
