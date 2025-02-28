@@ -37,6 +37,7 @@ class Gameloop():
         input()
         os.system('cls' if os.name == 'nt' else 'clear')
         player().name()
+        input("> ")
         npcs().crow()
         self.loop()
 
@@ -139,6 +140,8 @@ class control:
         elif key == "help":
             help().help()
             self.terminal(input("> "))
+        elif key == "clear":
+            os.system('cls' if os.name == 'nt' else 'clear')
         elif key == "nxt":
             pass
         else:
