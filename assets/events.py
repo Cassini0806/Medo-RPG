@@ -240,6 +240,8 @@ class npcs:
             self.butler()
         else:
             self.lady()
+        input("> ")
+
 
     def upgrade_tool(self):
         inventory().show_inventory()
@@ -398,6 +400,7 @@ class loot:
         if dice == 2:
             self.spawn_mimic()
             battle(0, False).loop()
+            input("> ")
         else:
             drop = items[random.randint(0,2)][random.randint(0,5)]
             print(f"You have found {drop[0]}")
