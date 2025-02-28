@@ -450,7 +450,7 @@ class help:
         elif help == "stats":
             print(f"{Npc_types[0]}: Are your stats like level, attack and health points. I thought you knew that.")
          elif help == "credits":
-            print(f"This game was designed and programmed by Thiago Cardoso. Please access my portfolio on github at \033[34m'https://github.com/Cassini0806'\033[0m")
+            print(f"This game was designed and programmed by Thiago Cardoso. Please access my portfolio on github at \033[34m'https://github.com/Cassini0806'\033[0m.")
         else:
             print(f"{Npc_types[0]}: I don't know what this is. Please enter another command.")
             self.help()
@@ -485,7 +485,8 @@ class help:
         print("     stats: acess your stats (hp, atk, etc);")
         print("     exit: close the game, inventory or npc dialogue;")
         print("     (You can only close the game after a complete turn marked by the '$>' symbol)")
-        print("     nxt: go to the next event.")
+        print("     nxt: go to the next event;")
+        print("     clear: clear the terminal.")
 
 class text:
     def __init__(self):
