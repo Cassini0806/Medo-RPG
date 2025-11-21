@@ -5,4 +5,4 @@
 
 ### English
 
-**Medo RPG** is a text-based RPG, developed by me with the purpose of learning POO with Python. The game is pretty rough (Read as Buggy) e certainly deserves some improvements, but i'm don't have the time (or patience) to do this. You can download the [exe file](Exe/Medo-RPG.zip) for Windows or, and i recommend, compile the game by yourself (no further library is used besides the Python 3.12.7 native ones). The game have a little tutorail that can be acess with the command "help".
+**Medo RPG** is a text-based RPG, developed by me with the purpose of learning OOP with Python. The game is pretty rough (Read as Buggy) e certainly deserves some improvements, but i don't have the time (or patience) for that. You can download the [executable file](Exe/Medo-RPG.zip) for Windows or, and i recommend, compile the game yourself (no further library is used besides the Python 3.12.7 native ones). The game have a little tutorial that can be acess with the "help" command.
